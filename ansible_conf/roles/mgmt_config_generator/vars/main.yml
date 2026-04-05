@@ -1,0 +1,14 @@
+---
+
+hostname: "{{ inventory_hostname }}"
+
+user_passw: $1$SCxM$vK8LSvVl9S0TUfuu.7Ank.
+enable_passw: $1$S/Mq$QVkeutDiPYoxh5lBmvxz30 
+
+mgmt_vlan: 10 
+
+mgmt_addr: "{{ ansible_host }} 255.255.255.192"
+
+mgmt_net_acl: 192.168.10.0 0.0.0.63
+
+domain_name: homelab.local

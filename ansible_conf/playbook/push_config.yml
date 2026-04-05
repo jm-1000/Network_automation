@@ -1,0 +1,35 @@
+---
+- name: Create backup directory
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: create the directory
+      file:
+        path: /var/tmp/backup
+        state: directory
+
+
+- name: Push config
+  hosts: ds
+  serial: 1
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Backup device config
+      ios_config:
+        authorize: yes
+        auth_pass: "root"
+        backup: yes
+        backup_options:
+          filename: "{{ inventory_hostname }}.bkp.conf"
+          dir_path: /var/tmp/backup
+
+    - name: Apply device config
+      ios_config:
+        authorize: yes
+        auth_pass: "root"
+        src: "/var/tmp/config/{{ inventory_hostname }}.conf"
+

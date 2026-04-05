@@ -1,0 +1,27 @@
+---
+hostname: "{{ inventory_hostname }}"
+
+vlan: 10 11 12 13
+
+iface_trunk:
+  - name: g0/0
+    allowed: 10,11
+  - name: g0/1
+    allowed: 10,12
+  - name: g0/2
+    allowed: 10,13
+
+trunk_native: 10 
+
+iface_echannel: g3/0-1
+
+echannel_id: 1
+
+ospf_id: 1
+ospf_iface: vlan10 g3/2 g3/3
+ospf_area: 0
+ospf_network:
+  - 192.168.10.0 0.0.0.255
+  - 192.168.11.0 0.0.0.255
+  - 192.168.12.0 0.0.0.255
+  - 192.168.13.0 0.0.0.255

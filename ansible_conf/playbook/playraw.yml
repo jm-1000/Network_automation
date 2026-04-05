@@ -1,0 +1,12 @@
+---
+- name: show cmd
+  hosts: ds
+  gather_facts: false
+
+  tasks:
+    - name: show
+      raw: "show cdp ne"
+          
+      register: print_output
+      
+    - debug: var=print_output.stdout_lines

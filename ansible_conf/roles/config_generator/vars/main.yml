@@ -1,0 +1,5 @@
+---
+mgmt_net: 192.168.10.0
+mgmt_wildcard: 0.0.0.63
+ntp_server: null
+log_server: null

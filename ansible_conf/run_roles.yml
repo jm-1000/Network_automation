@@ -1,0 +1,9 @@
+---
+  - name: generate dev configs from templates
+    hosts: ds
+    connection: local
+    gather_facts: no
+
+    roles:
+      - mgmt_config_generator
+      - config_generator

@@ -1,0 +1,19 @@
+---
+- name: Set config output directories
+  file:
+      path: /var/tmp/{{ item }}
+      state: directory
+  loop:
+    - config
+#    - backup
+
+- name: Include device group vars
+  include_vars: "{{ inventory_hostname.split('-')[0] }}.yml"
+
+- name: Include device vars
+  include_vars: "{{ inventory_hostname }}.yml"
+
+- name: Build device config
+  template:
+    src: l3_sw.j2
+    dest: /var/tmp/config/{{ inventory_hostname }}.conf

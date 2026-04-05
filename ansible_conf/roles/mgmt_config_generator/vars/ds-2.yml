@@ -1,0 +1,6 @@
+---
+trunk_iface: g0/0-2, g3/0-1
+
+ansible_iface: null
+ 
+mgmt: null

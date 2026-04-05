@@ -1,0 +1,32 @@
+---
+- name: ios_cmds
+  hosts: r,as
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: config
+      ios_command:
+        authorize: yes
+        auth_pass: "root"
+
+        commands: 
+          - erase nvram
+          - yes
+
+ #     register: print_output    
+#    - debug: var=print_output.stdout_lines
+
+
+#    - name: show running-conf
+#      ios_command:
+#        authorize: yes
+ #       auth_pass: "root"
+#
+ #       commands:
+  #        - sh run
+
+   #   register: print_output
+
+    #- name: save output
+     # copy: content="{{ print_output.stdout[0] }}" dest="./{{ inventory_hostname }}_output.txt"

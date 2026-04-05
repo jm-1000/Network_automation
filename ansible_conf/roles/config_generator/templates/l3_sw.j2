@@ -1,0 +1,90 @@
+hostname {{ hostname }}
+
+line cons 0
+  logging synchronous
+
+!access-list 22 permit {{ mgmt_net }} {{ mgmt_wildcard }}
+!line vty 0 15
+!  access-class 22 in
+!  transport input ssh 
+
+{% if ntp_server %}
+ntp server {{ ntp_server }}
+ntp update-calender
+ntp master
+{% endif %}
+
+{% if log_server %}
+logging host {{ log_server }}
+service timestamps log datetime
+{% endif %}
+
+vtp mode transparent
+{% for id in vlan.split(' ') %}
+vlan {{ id }}
+{% endfor %}
+
+spanning-tree vlan {{ vlan_stp_pr }} root primary 
+spanning-tree vlan {{ vlan_stp_sec }} root secondary 
+
+interface range {{ iface_off }}
+  shutdown
+
+{% for item in iface_trunk %}
+interface {{ item['name'] }}
+  switchport mode trunk
+  switchport trunk native vlan {{ trunk_native }}
+  switchport trunk allowed vlan {{ item['allowed'] }}
+
+{% endfor %}
+
+ip routing
+
+interface loopback 1
+  ip address {{ loopback }} 255.255.255.255
+
+{% for item in svi %}
+interface vlan {{ item['id'] }}
+  ip address {{ item['ip'] }} {{ item['mask'] }}
+  standby {{ item['id'] }} ip {{ item['standby_ip'] }}
+{% if item['id'] in vlan_stp_pr %}
+  standby {{ item['id'] }} priority 110
+{% endif %}
+  no shutdown
+
+{% endfor %}
+
+{% for item in iface_l3 %}
+interface {{ item['name'] }}
+  no switchport
+  ip address {{ item['ip'] }} {{ item['mask'] }}
+{% endfor %}
+
+router ospf {{ ospf_id }}
+  passive-interface default
+{% for item in ospf_iface.split(' ') %}
+  no passive-interface {{ item }}
+{% endfor %}
+{% for item in ospf_network %}
+  network {{ item }} area {{ ospf_area }}
+{% endfor %}
+
+{% if iface_vlan %}
+{% for item in iface_vlan %}
+{% for iface in item['name'].split(' ') %}
+interface {{ iface }}
+  switchport mode access
+  switchport access vlan {{ item['vlan'] }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+interface range {{ iface_echannel }}
+  channel-group {{ echannel_id }} mode active
+interface port-channel {{ echannel_id }}
+  switchport trunk encapsulation dot1q
+  switchport mode trunk
+  switchport trunk native vlan {{ trunk_native }}
+
+no interface vlan 1
+

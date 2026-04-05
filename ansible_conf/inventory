@@ -1,0 +1,20 @@
+[r]
+r-1 ansible_host=192.168.10.162
+r-2 ansible_host=192.168.10.170
+
+[as]
+as-1 ansible_host=192.168.10.11
+as-2 ansible_host=192.168.10.12
+
+[ds]
+ds-2 ansible_host=192.168.10.2
+ds-1 ansible_host=192.168.10.1
+
+[net_devices:children]
+r
+ds
+as
+
+[net_devices:vars]
+ansible_user=adm
+ansible_password=adm
